@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.Band.mapper.BoardMapper">
+	<!-- 게시글 목록 -->
+	<select id="ListPage" resultType="org.Band.model.BoardVO">
+		select *
+		from (
+		select @rownum:=@rownum+1 rownum, b.*
+		from board b,(select @rownum:=0) as tmp
+		where bno is not null
+		<if test="keyword != null">
+			<choose>
+				<when test="type=='TC'.toString()">
+					AND (title like concat('%',#{keyword},'%')
+					OR content like concat('%',#{keyword},'%'))
+				</when>
+				<when test="type=='T'.toString()">
+					AND title like concat('%',#{keyword},'%')
+				</when>
+				<when test="type=='C'.toString()">
+					AND content like concat('%',#{keyword},'%')
+				</when>
+				<when test="type=='N'.toString()">
+					AND NICK_NAME like concat('%',#{keyword},'%')
+				</when>
+			</choose>
+		</if>
+		<choose>
+			<when test="bgno != 0">
+				and bgnoinsert=#{bgno}
+			</when>
+			<otherwise></otherwise>
+		</choose>
+		order by bno desc
+		) as list
+		<![CDATA[
+		where rownum > (#{pageNum}-1)*#{amount} and rownum<=#{pageNum}*#{amount}
+		]]>
+	</select>
+	<!-- 조회수 -->
+	<update id="boardhit" parameterType="int">
+		update board
+		set hit=hit+1
+		where bno=#{bno}
+	</update>
+	<!-- 페이징(글 개수) -->
+	<select id="getTotal" resultType="int">
+		select count(*) from board
+		where bno is not null
+		<if test="keyword != null">
+			<choose>
+				<when test="type=='TC'.toString()">
+					AND (title like concat('%',#{keyword},'%')
+					OR content like concat('%',#{keyword},'%'))
+				</when>
+				<when test="type=='T'.toString()">
+					AND title like concat('%',#{keyword},'%')
+				</when>
+				<when test="type=='C'.toString()">
+					AND content like concat('%',#{keyword},'%')
+				</when>
+				<when test="type=='N'.toString()">
+					AND NICK_NAME like concat('%',#{keyword},'%')
+				</when>
+			</choose>
+		</if>
+		<choose>
+			<when test="bgno != 0">
+				and bgnoinsert=#{bgno}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 게시글 쓰기 -->
+	<insert id="write" parameterType="org.Band.model.BoardVO" useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="int">
+			select ifnull(max(bno), 0)+1 bno
+			from board
+		</selectKey>
+		insert into board(title, content, bgnoinsert, ID, NICK_NAME)
+		values(#{title}, #{content}, #{bgnoinsert}, #{ID}, #{NICK_NAME})
+	</insert>
+	<!-- 게시글 내용 -->
+	<select id="view" resultType="org.Band.model.BoardVO">
+		select * from board where bno=#{bno}
+	</select>
+	<!-- 게시글 내용 수정 -->
+	<update id="modify">
+		update board set title=#{title}, content=#{content}, regupdate=#{regupdate}  where bno=#{bno}
+	</update>
+	<!-- 게시글 삭제 -->
+	<delete id="delete">
+		delete from board where bno=#{bno}
+	</delete>
+	<!-- 테이블에 댓글수 넣기 -->
+	<update id="cmthit" parameterType="int">
+		update board b
+		set b.cmthit = (select count(rno) from comment where bno=#{bno})
+		where b.bno = #{bno};
+	</update>
+	
+	<!-- 게시글 추천 수 -->
+	<update id="updateLike" parameterType="int">
+		update board
+		set likehit = likehit + 1
+		where bno = #{bno}
+	</update>
+	<!-- 게시글 추천 취소 -->
+	<update id="updateLikeCancel" parameterType="int">
+		update board
+		set likehit = likehit - 1
+		where bno = #{bno}
+	</update>
+	<!-- 게시글 추천시 likey에 insert -->
+	<insert id="insertLike">
+		insert into likey(LIKENO, BNO, ID, LIKECHECK)
+		values((select LIKENO from (select IFNULL(MAX(LIKENO), 0) +1 from likey) tmp), #{bno}, #{ID}, 0);
+	</insert>
+	<!-- 게시글 추천 취소시 삭제 -->
+	<delete id="deleteLike">
+		delete from likey where BNO=#{bno} AND ID=#{ID}
+	</delete>
+	<!-- 게시글 추천시 체크를 1로 만들기-->
+	<update id="updateLikeCheck">
+		UPDATE likey set LIKECHECK = 1
+		WHERE BNO = #{bno} AND ID=#{ID}
+	</update>
+	<!-- 게시글 추천취소시 체크를 0으로 만들기 -->
+	<update id="updateLikeCheckCancel">
+		update likey set LIKECHECK = 0
+		where BNO =#{bno} and ID=#{ID}
+	</update>
+	<!-- 게시글 추천 중복 방지 -->
+	<select id="likeCheck" resultType="int">
+		select count(*) from likey
+		where BNO=#{bno} and ID=#{ID}
+	</select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.Band.mapper.CommentMapper">
+	<select id="cmtList" resultType="org.Band.model.CommentVO">
+		select * from comment
+		where bno=#{bno}
+	</select>
+	
+	<insert id="cmtInsert">
+		insert into comment(bno, nick, id, content)
+		values(#{bno}, #{nick}, #{id}, #{content})
+	</insert>
+	
+	<update id="cmtUpdate" parameterType="org.Band.model.CommentVO">
+		update comment
+		set nick=#{nick}, content=#{content}
+		where rno=#{rno}
+	</update>
+	
+	<delete id="cmtDelete" parameterType="org.Band.model.CommentVO">
+		delete from comment
+		where rno=#{rno}
+	</delete>
+	
+	<select id="cmtSelect" parameterType="org.Band.model.CommentVO" resultType="org.Band.model.CommentVO">
+		select * from comment
+		where bno = #{bno}
+		and rno = #{rno}
+	</select>
+	
+	
+	<insert id="minsert">
+		insert into comment(m_no, nick, id, content)
+		values(#{m_no}, #{nick}, #{id}, #{content})
+	</insert>
+	
+	<select id="mlist" resultType="org.Band.model.CommentVO">
+		select * from comment
+		where m_no=#{m_no}
+	</select>
+	
+	<select id="mSelect" parameterType="org.Band.model.CommentVO" resultType="org.Band.model.CommentVO">
+		select * from comment
+		where m_no = #{m_no}
+		and rno = #{rno}
+	</select>
+	
+	
+	
+</mapper>

@@ -1,0 +1,252 @@
+@charset "UTF-8";
+.sign{
+	width:450px;
+	height:600px;
+	margin:0 auto;
+	margin-top:5rem;
+}
+.sign_logo{
+	text-align:center;
+	margin-bottom:4rem;
+}
+.sign_logo_sp{
+	margin:20px 0px 0px 0px;
+}
+.sign_box{
+	box-sizing:border-box;
+	width:100%;
+	height:30px;
+	border:1px solid #B3B3B3;
+	border-radius:3px;
+	padding:7px;
+}
+.sign_box:hover,:after{
+	border:1px solid #333333;
+}
+.sign_bot{
+	margin-bottom:2rem;
+}
+.sign_wall{
+	text-align:center;
+}
+.button{
+	margin:2rem 0 2rem 0;
+}
+button{
+	border:none;
+	background-color:#57529F;
+	color:white;
+	text-align:center;
+	width:100%;
+	height:30px;
+	font-size:15px;
+	cursor:pointer;
+	border-radius:3px;
+	padding:5px;
+}
+.text_sizing{
+	color:#333333;
+	text-size:1rem;
+}
+.sign_a{
+	color:#65A8FF;
+}
+/* 중복 아이디가 아닌 경우 */
+.id_input_re_1{
+	color:green;
+	display:none;
+}
+/* 중복 아이디인 경우 */
+.id_input_re_2{
+	color:red;
+	display:none;
+}
+/* 중복 이메일이 아닌 경우 */
+.em_input_re_1{
+	color:green;
+	display:none;
+}
+/* 중복 이메일인 경우 */
+.em_input_re_2{
+	color:red;
+	display:none;
+}
+.id_chk{
+	display:none;
+}
+.pw_chk{
+	display:none;
+}
+.mail_chk{
+	display:none;
+}
+.name_chk{
+	display:none;
+}
+.nick_chk{
+	display:none;
+}
+.intro_chk{
+	display:none;
+}
+.mailnum_chk{
+	display:none;
+}
+#mail_check_input_box_false{
+    background-color:#ebebe4;
+}
+ 
+#mail_check_input_box_true{
+    background-color:white;
+}
+.address_btn{
+	width:100px;
+	height:20px;
+	cursor:pointer;
+	border-radius:3px;
+	padding:7px;
+	text-align:center;
+	background-color:#57529F;
+}
+.address_btn span{
+	color:white;
+}
+.sign_zip{
+	box-sizing:border-box;
+	width:70%;
+	height:30px;
+	border:1px solid #B3B3B3;
+	border-radius:3px;
+	padding:7px;
+}
+/* 프로필 */
+.profile{
+	width:800px;
+	height:auto;
+	background-color:#F0F0F0;
+	margin:auto;
+	padding:20px;
+}
+.tb_pro{
+	text-align:center;
+}
+.pchoice{
+	width:800px;
+	height:auto;
+	margin:auto;
+	padding:20px;
+}
+.mymy{
+	cursor:pointer;
+	padding:10px 15px;
+}
+.like_area{
+	border:1px solid black;
+	border-radius:12px;
+	width:100%;
+	margin:10px;
+	padding:10px;
+}
+.commonband{
+	border:1px solid black;
+	padding:15px;
+	margin:0px 10px 0px 0px;
+}
+.profilelike a:hover{
+	text-decoration:underline;
+}
+.pro_header{
+	padding:20px;
+}
+.profile_a{
+	display:block;
+	width:100%;
+	height:30px;
+	text-align:center;
+	border:white 1px solid;
+	border-radius:7px;
+	padding-top:10px;
+	background-color:white;
+}
+.pro_nick{
+	margin-left:30px;
+	margin-bottom:40px;
+	font-size:1.5rem;
+}
+.pro_intro{
+	padding:0px 30px;
+	width:780px;
+	height:auto;
+	margin:auto;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+.proview{
+	width:600px;
+	height:auto;
+	margin:auto;
+	margin-top:3rem;
+}
+.draw{
+	width:500px;
+	height:auto;
+	margin:auto;
+	margin-top:3rem;
+}
+.proview_top{
+	font-size:1.5rem;
+	justify-content:center;
+	align-items: center;
+	display:flex;
+}
+.input_top{
+	margin-top:2rem;
+}
+.required{
+	color:red;
+}
+.find{
+	text-align:center;
+	color:#333333;
+	padding:10px;
+	margin-bottom:2rem;
+}
+#modal_layer{
+	display:none;
+	position:relative;
+	width:100%;
+	height:100%;
+	z-index:1;
+	text-align:center;
+}
+.modalbtn{
+	display:inline-block;
+	width:100%;
+}
+#modal_layer #modal_in{
+	width:400px;
+	margin:50px auto;
+	padding:20px 10px;
+	background:#fff;
+	border:2px solid #666;
+}
+#modal_layer .modalback{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:rgba(0, 0, 0, 0.5);
+	z-index:-1;
+}
+#drawsubmit{
+	margin:30px 0px 5px 0px;
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+@charset "UTF-8";
+.container{
+	width:600px;
+	margin:auto;
+	background-color:gray;
+}
+.user_container{
+	width:400px;
+	margin:auto;
+}
+.user_spa{
+	display:inline-block;
+	background-color:white;
+	width:400px;
+	height:30px;
+}
+.user_spa_inp{
+	width:350px;
+	border:0 solid black;
+}
+.w-btn-neon2 {
+    position: relative;
+    border: none;
+    min-width: 200px;
+    min-height: 50px;
+    background: linear-gradient(
+        90deg,
+        rgba(238, 225, 254, 1) 0%,
+        rgba(190, 177, 206, 1) 100%
+    );
+    border-radius: 1000px;
+    color: #808080;
+    cursor: pointer;
+    box-shadow: 12px 12px 24px rgba(190, 177, 206, 0.6);
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.w-btn-neon2:hover {
+    transform: scale(1.2);
+}
+button {
+    margin: 20px;
+}

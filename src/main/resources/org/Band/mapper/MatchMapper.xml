@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.Band.mapper.MatchMapper">
+	<!-- 안녕하세여 -->
+	<insert id="regist" parameterType="org.Band.model.BandVO">
+		<selectKey keyProperty="m_no" order="BEFORE" resultType="int">
+			select ifnull(max(m_no), 0)+1 bno
+			from searching
+		</selectKey>
+		insert into searching(m_title, m_content, m_sort, m_gender, m_loc, m_ID, m_NICK_NAME)
+		values(#{m_title}, #{m_content}, #{m_sort}, #{m_gender}, #{m_loc}, #{m_ID}, #{m_NICK_NAME})
+	</insert>
+	<select id="matchList" resultType="org.Band.model.BandVO">
+		select * from
+			( select @rownum:=@rownum+1 rownum, s.*
+				from searching s, (select @rownum:=0) as tmp
+		        where m_id != 'admin'
+		        <if test="keyword != null">
+				<choose>
+					<when test="type=='TC'.toString()">
+						AND (m_title like concat('%',#{keyword},'%')
+						OR m_content like concat('%',#{keyword},'%'))
+					</when>
+					<when test="type=='T'.toString()">
+						AND m_title like concat('%',#{keyword},'%')
+					</when>
+					<when test="type=='C'.toString()">
+						AND m_content like concat('%',#{keyword},'%')
+					</when>
+				</choose>
+				</if>
+		        order by m_no desc ) as sch
+       			<![CDATA[
+				where rownum > (#{pageNum}-1)*#{amount} and rownum<=#{pageNum}*#{amount}
+				]]>
+	</select>
+	<select id="mview" resultType="org.Band.model.BandVO">
+		select * from searching
+		where m_no=#{m_no}
+	</select>
+	<update id="update">
+		update searching set
+		m_title=#{m_title},
+		m_content=#{m_content},
+		m_gender=#{m_gender},
+		m_sort=#{m_sort},
+		m_loc=#{m_loc}
+		where m_no=#{m_no}
+	</update>
+	<delete id="delee">
+		delete from searching where m_no=#{m_no}
+	</delete>
+	<select id="mtotal" resultType='int'>
+		select count(*) from searching
+		where m_no is not null
+		<if test="keyword != null">
+			<choose>
+				<when test="type=='TC'.toString()">
+					AND (m_title like concat('%',#{keyword},'%')
+					OR m_content like concat('%',#{keyword},'%'))
+				</when>
+				<when test="type=='T'.toString()">
+					AND m_title like concat('%',#{keyword},'%')
+				</when>
+				<when test="type=='C'.toString()">
+					AND m_content like concat('%',#{keyword},'%')
+				</when>
+			</choose>
+		</if>
+	</select>
+</mapper>

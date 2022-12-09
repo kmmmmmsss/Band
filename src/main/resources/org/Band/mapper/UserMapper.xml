@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.Band.mapper.UserMapper">
+	<!-- 로그인 -->
+	<select id="loginCheck" resultType="org.Band.model.UserVO">
+		SELECT *
+		FROM USER
+		WHERE ID=#{ID} AND PASSWORD=#{PASSWORD}
+	</select>
+	<!-- 회원가입 -->
+	<insert id="signup">
+		INSERT INTO USER(ID, PASSWORD, EMAIL, NAME, NICK_NAME)
+		VALUES(#{ID}, #{PASSWORD}, #{EMAIL}, #{NAME}, #{NICK_NAME})
+	</insert>
+	<!-- 프로필 -->
+	<select id="profile" resultType="org.Band.model.UserVO">
+		SELECT * FROM USER WHERE ID=#{ID}
+	</select>
+	<!-- 아이디 중복 검사 -->
+	<select id="idCheck" resultType="int">
+		select count(*) from user where ID=#{ID}
+	</select>
+	<!-- 이메일 중복 검사 -->
+	<select id="emCheck" resultType="int">
+		select count(*) from user where EMAIL=#{EMAIL}
+	</select>
+	<!-- 회원정보 수정 -->
+	<update id="userUpdate">
+		UPDATE USER
+		SET ID=#{ID},
+		PASSWORD=#{PASSWORD},
+		NAME=#{NAME},
+		NICK_NAME=#{NICK_NAME},
+		EMAIL=#{EMAIL},
+		INTRO=#{INTRO}
+		WHERE ID=#{ID}
+	</update>
+	<!-- 아이디 찾기 -->
+	<select id="findId" resultType="org.Band.model.UserVO">
+		SELECT * FROM USER
+		WHERE EMAIL=#{EMAIL}
+		AND NAME=#{NAME}
+	</select>
+	<select id="findPw" resultType="org.Band.model.UserVO">
+		SELECT * FROM USER
+		WHERE EMAIL=#{EMAIL}
+		AND ID=#{ID}
+	</select>
+	<update id="pwUpdate" parameterType="String">
+		UPDATE USER
+		SET PASSWORD = #{PASSWORD}
+		WHERE EMAIL = #{EMAIL}
+		AND ID = #{ID}
+	</update>
+	<delete id="userdraw">
+		delete from user
+		where ID=#{ID}
+		and NAME=#{NAME}
+		and PASSWORD=#{PASSWORD}
+	</delete>
+	
+	
+	<resultMap type="org.Band.model.UserVO" id="userMap">
+	<id property="ID" column="ID" />
+	<id property="NICK_NAME" column="NICK_NAME" />
+	<id property="NAME" column="NAME" />
+	</resultMap>
+	
+	<resultMap type="org.Band.model.BoardVO" id="boardMap">
+		<id property="bno" column="bno" />
+		<id property="title" column="title" />
+		<id property="regdate" column="regdate" />
+		<id property="likehit" column="likehit" />
+		<id property="hit" column="hit" />
+		<id property="bgnoinsert" column="bgnoinsert" />
+		<id property="ID" column="ID" />
+		<id property="NICK_NAME" column="NICK_NAME" />
+		<id property="cmthit" column="cmthit" />
+	</resultMap>
+	
+	<resultMap type="org.Band.model.ProfileVO" id="profileMap">
+		<collection property="board" resultMap="boardMap" />
+		<collection property="user" resultMap="userMap" />
+	</resultMap>
+	
+	<select id="getInfo" resultMap="profileMap">
+		select u.ID, u.NAME, u.NICK_NAME
+			, b.bno, b.title, b.regdate, b.likehit, b.hit, b.bgnoinsert, b.ID, b.NICK_NAME
+		from user u left outer join board b
+		on u.ID = b.ID
+		where u.ID=#{ID}
+		order by bno desc
+	</select>
+	
+	<resultMap type="org.Band.model.LikeVO" id="likeMap">
+		<id property="LIKENO" column="LIKENO" />
+		<id property="BNO" column="BNO" />
+		<id property="ID" column="ID" />
+		<id property="LIKEDATE" column="LIKEDATE" />
+	</resultMap>
+	
+	<resultMap type="org.Band.model.ProfileVO" id="profilelikeMap">
+		<collection property="board" resultMap="boardMap" />
+		<collection property="user" resultMap="userMap" />
+		<collection property="like" resultMap="likeMap" />
+	</resultMap>
+	
+	<select id="likeInfo" resultMap="profilelikeMap">
+		select u.ID, u.NICK_NAME
+		, l.LIKENO, l.BNO, l.ID, l.LIKEDATE
+        , b.bno, b.title, b.NICK_NAME, b.bgnoinsert
+		from user u
+		left outer join likey l
+		on u.ID = l.ID
+		left outer join board b
+		on l.BNO = b.bno
+		where u.ID=#{ID}
+		order by LIKENO desc
+	</select>
+	
+	<resultMap type="org.Band.model.BandVO" id="bandMap">
+		<id property="m_ID" column="m_ID"/>
+		<id property="m_NICK_NAME" column="m_NICK_NAME"/>
+		<id property="m_title" column="m_title"/>
+		<id property="m_no" column="m_no"/>
+		<id property="m_date" column="m_date"/>
+		<id property="m_sort" column="m_sort"/>
+	</resultMap>
+	
+	<resultMap type="org.Band.model.ProfileVO" id="profilebandMap">
+		<collection property="user" resultMap="userMap"/>
+		<collection property="band" resultMap="bandMap"/>
+	</resultMap>
+	
+	<select id="bandInfo" resultMap="profilebandMap">
+		select u.ID, u.NAME, u.NICK_NAME
+			, s.m_no, s.m_title, s.m_content, s.m_date, s.m_sort, s.m_ID, s.m_NICK_NAME
+		from user u left outer join searching s
+		on u.ID = s.m_ID
+		where u.ID=#{ID}
+		order by m_no desc
+	</select>
+	
+	<resultMap type="org.Band.model.ProfileVO" id="mainMap">
+		<collection property="board" resultMap="boardMap" />
+		<collection property="user" resultMap="userMap" />
+	</resultMap>
+	
+	<!-- 최근 인기글(추천수/댓글수)많은 글 가져오기 -->
+	<select id="bests" resultMap="mainMap">
+	<![CDATA[
+		select b.bno, b.title, b.ID, b.NICK_NAME, b.regdate, b.hit, b.bgnoinsert, b.likehit, b.cmthit
+		, u.ID, u.NICK_NAME
+	    from (select * from board b where b.regdate BETWEEN DATE_ADD(NOW(),INTERVAL -3 DAY) AND NOW()) as b
+	    left outer join user u
+	    on u.ID = b.ID
+	    where (b.bgnoinsert = 1
+	    or b.bgnoinsert = 2)
+	    and b.likehit > 7
+	    and b.cmthit > 20
+	    and b.hit > 50
+	    order by b.hit desc;
+	]]>
+	</select>
+	
+</mapper>
